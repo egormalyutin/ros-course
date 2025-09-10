@@ -1,0 +1,2 @@
+/opt/ros/jazzy/lib/python3.12/site-packages/ros2topic
+/opt/ros/jazzy/share/ros2topic
