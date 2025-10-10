@@ -2,3 +2,7 @@
 /install
 /log
 __pycache__
+/.vscode
+
+/ros_tutorials
+/bak
