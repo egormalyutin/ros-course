@@ -38,6 +38,12 @@ def generate_launch_description():
             Node(
                 package="turtle_multi_target",
                 executable="turtle_tf",
+                remappings=[("pose", "/turtle1/pose")],
+                parameters=[{"frame": "turtle1"}],
+            ),
+            Node(
+                package="turtle_multi_target",
+                executable="turtle_tf",
                 remappings=[("pose", "/turtle2/pose")],
                 parameters=[{"frame": "turtle2"}],
             ),
