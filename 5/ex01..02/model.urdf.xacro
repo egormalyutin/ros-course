@@ -1,0 +1,215 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot_bobot">
+  <material name="skin">
+    <color rgba="1 0.87 0.76 1" />
+  </material>
+
+  <material name="black">
+    <color rgba="0 0 0 1" />
+  </material>
+
+  <!-- UTILS -->
+  <xacro:macro name="shape" params="material *shape">
+    <visual>
+      <geometry>
+        <xacro:insert_block name="shape" />
+      </geometry>
+      <material name="${material}" />
+    </visual>
+    <collision>
+      <geometry>
+        <xacro:insert_block name="shape" />
+      </geometry>
+    </collision>
+  </xacro:macro>
+
+  <xacro:macro
+    name="joint" params="p c type **params">
+    <joint name="${p}_to_${c}" type="${type}">
+      <parent link="${p}" />
+      <child link="${c}" />
+      <xacro:insert_block name="params" />
+    </joint>
+  </xacro:macro>
+
+  <xacro:macro name="inertia"
+    params="mass x y z">
+    <intertial>
+      <mass value="${mass}" />
+      <intertia ixx="${x}" iyy="${y}" izz="${z}" ixy="0" ixz="0" iyz="0" />
+    </intertial>
+  </xacro:macro>
+
+  <!-- SHAPES -->
+  <xacro:macro
+    name="box_link" params="name x y z material density">
+    <xacro:property name="m" value="${x*y*z*density}" />
+
+    <link name="${name}">
+      <xacro:shape material="${material}">
+        <box size="${x} ${y} ${z}" />
+      </xacro:shape>
+      <xacro:inertia
+        mass="${m}"
+        x="${m * (y**2 + z**2) / 12}"
+        y="${m * (x**2 + z**2) / 12}"
+        z="${m * (x**2 + y**2) / 12}"
+      />
+    </link>
+  </xacro:macro>
+
+  <xacro:macro
+    name="cylinder_link" params="name length radius material density">
+    <xacro:property name="m" value="${density*length*pi*radius**2}" />
+
+    <link name="${name}">
+      <xacro:shape material="${material}">
+        <cylinder length="${length}" radius="${radius}" />
+      </xacro:shape>
+      <xacro:inertia
+        mass="${m}"
+        x="${m * (3 * radius**2 + length**2)/12}"
+        y="${m * (3 * radius**2 + length**2)/12}"
+        z="${m * radius**2 /2}"
+      />
+    </link>
+  </xacro:macro>
+
+  <!-- BODY AND HEAD -->
+  <link name="base_link" />
+
+  <xacro:joint
+    p="base_link" c="body" type="fixed">
+    <params>
+      <origin xyz="0 0 0" />
+    </params>
+  </xacro:joint>
+
+  <xacro:box_link
+    name="body"
+    x="0.1" y="0.1" z="1"
+    material="skin"
+    density="1"
+  />
+
+  <xacro:box_link
+    name="head"
+    x="0.2" y="0.2" z="0.2"
+    material="skin"
+    density="1"
+  />
+
+  <xacro:joint p="body" c="head" type="fixed">
+    <params>
+      <origin xyz="0 0 0.6" />
+    </params>
+  </xacro:joint>
+
+  <!-- ARMS -->
+  <link name="shoulders" />
+
+  <xacro:joint p="body"
+    c="shoulders" type="fixed">
+    <params>
+      <origin xyz="0 0 0.3" />
+    </params>
+  </xacro:joint>
+
+  <xacro:macro name="arm" params="name reflect">
+    <xacro:box_link
+      name="${name}_shoulder"
+      x="0.1" y="0.3" z="0.1"
+      material="skin"
+      density="1"
+    />
+
+    <xacro:box_link
+      name="${name}_arm"
+      x="0.1" y="0.1" z="0.2"
+      material="skin"
+      density="1"
+    />
+
+    <xacro:joint p="shoulders" c="${name}_shoulder" type="fixed">
+      <params>
+        <origin xyz="0 ${reflect*0.2} 0" />
+      </params>
+    </xacro:joint>
+
+    <xacro:joint p="${name}_shoulder" c="${name}_arm" type="fixed">
+      <params>
+        <origin xyz="0 ${reflect*0.1} -0.15" />
+      </params>
+    </xacro:joint>
+  </xacro:macro>
+
+  <xacro:arm name="right" reflect="1" />
+  <xacro:arm name="left" reflect="-1" />
+
+  <!-- LEGS -->
+  <link name="butt" />
+  <xacro:joint p="body" c="butt" type="fixed">
+    <params>
+      <origin xyz="0 0 -0.45" />
+    </params>
+  </xacro:joint>
+
+  <xacro:macro name="leg" params="name reflect">
+    <xacro:box_link
+      name="${name}_thigh"
+      x="0.1" y="0.3" z="0.1"
+      material="skin"
+      density="1"
+    />
+
+    <xacro:box_link
+      name="${name}_shin"
+      x="0.1" y="0.1" z="0.4"
+      material="skin"
+      density="1"
+    />
+
+    <xacro:joint p="butt" c="${name}_thigh" type="fixed">
+      <params>
+        <origin xyz="0 ${reflect*0.2} 0" />
+      </params>
+    </xacro:joint>
+
+    <xacro:joint p="${name}_thigh" c="${name}_shin" type="fixed">
+      <params>
+        <origin xyz="0 ${reflect*0.1} -0.25" />
+      </params>
+    </xacro:joint>
+
+    <xacro:cylinder_link
+      name="${name}_wheel"
+      length="0.1"
+      radius="0.15"
+      material="black"
+      density="1"
+    />
+
+    <xacro:box_link
+      name="${name}_wheel_tick"
+      x="0.01" y="0.1" z="0.01"
+      material="skin"
+      density="1"
+    />
+
+    <xacro:joint p="${name}_shin" c="${name}_wheel" type="continuous">
+      <params>
+        <origin rpy="${pi/2} 0 0" xyz="0 ${reflect*0.1} -0.15" />
+        <axis xyz="0 0 1" />
+      </params>
+    </xacro:joint>
+
+    <xacro:joint p="${name}_wheel" c="${name}_wheel_tick" type="fixed">
+      <params>
+        <origin xyz="0 0.07 ${reflect*-0.05}" />
+      </params>
+    </xacro:joint>
+  </xacro:macro>
+
+  <xacro:leg name="right" reflect="1" />
+  <xacro:leg name="left" reflect="-1" />
+</robot>

@@ -1,0 +1,187 @@
+<?xml version="1.0"?>
+<robot name="myfirst">
+  <material name="skin">
+    <color rgba="1 0.87 0.76 1" />
+  </material>
+
+  <material name="black">
+    <color rgba="0 0 0 1" />
+  </material>
+
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 1" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+
+  <link name="head">
+    <visual>
+      <geometry>
+        <box size="0.2 0.2 0.2" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="base_link_to_head" type="fixed">
+    <parent link="base_link" />
+    <child link="head" />
+    <origin xyz="0 0 0.6" />
+  </joint>
+
+  <link name="shoulders" />
+  <joint name="base_link_to_shoulders" type="fixed">
+    <parent link="base_link" />
+    <child link="shoulders" />
+    <origin xyz="0 0 0.3" />
+  </joint>
+
+  <link name="right_shoulder">
+    <visual>
+      <geometry>
+        <box size="0.1 0.3 0.1" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="shoulders_to_right_shoulder" type="fixed">
+    <parent link="shoulders" />
+    <child link="right_shoulder" />
+    <origin xyz="0 0.2 0" />
+  </joint>
+
+  <link name="right_arm">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.2" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="right_shoulder_to_right_arm" type="fixed">
+    <parent link="right_shoulder" />
+    <child link="right_arm" />
+    <origin xyz="0 0.1 -0.15" />
+  </joint>
+
+  <link name="left_shoulder">
+    <visual>
+      <geometry>
+        <box size="0.1 0.3 0.1" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="shoulders_to_left_shoulder" type="fixed">
+    <parent link="shoulders" />
+    <child link="left_shoulder" />
+    <origin xyz="0 -0.2 0" />
+  </joint>
+
+  <link name="left_arm">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.2" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="left_shoulder_to_left_arm" type="fixed">
+    <parent link="left_shoulder" />
+    <child link="left_arm" />
+    <origin xyz="0 -0.1 -0.15" />
+  </joint>
+
+  <link name="butt" />
+  <joint name="base_link_to_butt" type="fixed">
+    <parent link="base_link" />
+    <child link="butt" />
+    <origin xyz="0 0 -0.45" />
+  </joint>
+
+  <link name="right_thigh">
+    <visual>
+      <geometry>
+        <box size="0.1 0.3 0.1" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="butt_to_right_thigh" type="fixed">
+    <parent link="butt" />
+    <child link="right_thigh" />
+    <origin xyz="0 0.2 0" />
+  </joint>
+
+  <link name="right_shin">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.4" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="right_thigh_to_right_shin" type="fixed">
+    <parent link="right_thigh" />
+    <child link="right_shin" />
+    <origin xyz="0 0.1 -0.25" />
+  </joint>
+
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.15" />
+      </geometry>
+      <material name="black" />
+    </visual>
+  </link>
+  <joint name="right_shin_to_right_wheel" type="fixed">
+    <parent link="right_shin" />
+    <child link="right_wheel" />
+    <origin rpy="1.570796327 0 0" xyz="0 0.1 -0.15" />
+  </joint>
+
+  <link name="left_thigh">
+    <visual>
+      <geometry>
+        <box size="0.1 0.3 0.1" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="butt_to_left_thigh" type="fixed">
+    <parent link="butt" />
+    <child link="left_thigh" />
+    <origin xyz="0 -0.2 0" />
+  </joint>
+
+  <link name="left_shin">
+    <visual>
+      <geometry>
+        <box size="0.1 0.1 0.4" />
+      </geometry>
+      <material name="skin" />
+    </visual>
+  </link>
+  <joint name="left_thigh_to_left_shin" type="fixed">
+    <parent link="left_thigh" />
+    <child link="left_shin" />
+    <origin xyz="0 -0.1 -0.25" />
+  </joint>
+
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder length="0.1" radius="0.15" />
+      </geometry>
+      <material name="black" />
+    </visual>
+  </link>
+  <joint name="left_shin_to_left_wheel" type="fixed">
+    <parent link="left_shin" />
+    <child link="left_wheel" />
+    <origin rpy="1.570796327 0 0" xyz="0 -0.1 -0.15" />
+  </joint>
+</robot>

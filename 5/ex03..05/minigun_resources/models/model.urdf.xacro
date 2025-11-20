@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="robot_bobot">
+  <material name="skin">
+    <color rgba="1 0.87 0.76 1" />
+  </material>
+
+  <xacro:property name="s" value="0.1" />
+
+  <xacro:include filename="$(find minigun_resources)/models/model.gazebo.xacro" />
+
+  <material name="gray">
+    <color rgba="0.5 0.5 0.5 1" />
+  </material>
+
+  <link name="base_link" />
+
+  <joint name="frame_joint" type="fixed">
+    <parent link="base_link" />
+    <child link="frame" />
+    <origin xyz="0 0 ${3.833*s}" />
+  </joint>
+
+  <xacro:macro name="default_inertial" params="mass">
+    <inertial>
+      <mass value="${mass}" />
+      <!-- <inertia ixx="${1e-3*mass}" ixy="0.0" ixz="0.0"
+        iyy="${1e-3*mass}" iyz="0.0"
+        izz="${1e-3*mass}" /> -->
+      <inertia ixx="${1e-3}" ixy="0.0" ixz="0.0"
+        iyy="${1e-3}" iyz="0.0"
+        izz="${1e-3}" />
+    </inertial>
+  </xacro:macro>
+
+  <xacro:macro name="little_wheel" params="name">
+    <link name="${name}">
+      <visual>
+        <origin rpy="${pi/2} ${pi/2} 0" />
+        <geometry>
+          <mesh filename="file://$(find minigun_resources)/models/stl/little_wheel.stl"
+            scale="${0.1*s} ${0.1*s} ${0.1*s}" />
+        </geometry>
+        <material name="gray" />
+      </visual>
+      <collision>
+        <origin rpy="0 ${pi/2} 0" xyz="0 0 0" />
+        <geometry>
+          <cylinder radius="${s*0.3}" length="${s*0.35}" />
+        </geometry>
+        <material name="gray" />
+      </collision>
+      <xacro:default_inertial mass="1" />
+    </link>
+  </xacro:macro>
+
+  <xacro:macro name="wheel" params="name">
+    <link name="${name}">
+      <visual>
+        <origin rpy="${pi/2} ${pi/2} 0" />
+        <geometry>
+          <mesh filename="file://$(find minigun_resources)/models/stl/wheel.stl"
+            scale="${0.1*s} ${0.1*s} ${0.1*s}" />
+        </geometry>
+        <material name="gray" />
+      </visual>
+      <collision>
+        <origin rpy="0 ${pi/2} 0" xyz="${s*0.15} 0 0" />
+        <geometry>
+          <cylinder radius="${s*2}" length="${s*0.4}" />
+        </geometry>
+        <material name="gray" />
+      </collision>
+      <xacro:default_inertial mass="10" />
+    </link>
+  </xacro:macro>
+
+  <link name="frame">
+    <visual>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find minigun_resources)/models/stl/base.stl"
+          scale="${0.1*s} ${0.1*s} ${0.1*s}" />
+      </geometry>
+      <material name="gray" />
+    </visual>
+    <xacro:default_inertial mass="1" />
+  </link>
+
+  <link name="barrel">
+    <visual>
+      <origin rpy="${pi/2} 0 0" xyz="0 0 0" />
+      <geometry>
+        <mesh filename="file://$(find minigun_resources)/models/stl/barrel.stl"
+          scale="${0.1*s} ${0.1*s} ${0.1*s}" />
+      </geometry>
+      <material name="gray" />
+    </visual>
+    <collision>
+      <origin rpy="${pi/2} 0 0" xyz="0 ${-1.7*s} 0" />
+      <geometry>
+        <cylinder length="${7*s}" radius="${0.7*s}" />
+      </geometry>
+    </collision>
+    <xacro:default_inertial mass="10" />
+  </link>
+
+
+  <joint name="barrel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="barrel" />
+    <axis xyz="0 1 0" />
+  </joint>
+
+  <xacro:wheel name="left_wheel" />
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="left_wheel" />
+    <origin xyz="${2.69*s} ${0.75*s} ${-1.73*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <xacro:wheel name="right_wheel" />
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="right_wheel" />
+    <origin xyz="${-3*s} ${0.75*s} ${-1.73*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <xacro:little_wheel name="left_little_wheel" />
+  <joint name="left_little_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="left_little_wheel" />
+    <origin xyz="${0.3*s} ${-2.5*s} ${-3.4*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <xacro:little_wheel name="right_little_wheel" />
+  <joint name="right_little_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="right_little_wheel" />
+    <origin xyz="${-0.3*s} ${-2.5*s} ${-3.4*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <xacro:little_wheel name="back_left_little_wheel" />
+  <joint name="back_left_little_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="back_left_little_wheel" />
+    <origin xyz="${0.3*s} ${3*s} ${-3.4*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <xacro:little_wheel name="back_right_little_wheel" />
+  <joint name="back_right_little_wheel_joint" type="continuous">
+    <parent link="frame" />
+    <child link="back_right_little_wheel" />
+    <origin xyz="${-0.3*s} ${3*s} ${-3.4*s}" />
+    <axis xyz="1 0 0" />
+  </joint>
+</robot>
