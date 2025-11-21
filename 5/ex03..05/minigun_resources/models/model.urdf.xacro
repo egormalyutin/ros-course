@@ -158,4 +158,18 @@
     <origin xyz="${-0.3*s} ${3*s} ${-3.4*s}" />
     <axis xyz="1 0 0" />
   </joint>
+
+  <link name="lidar_frame" />
+  <joint name="lidar_frame_joint" type="fixed">
+    <parent link="frame" />
+    <child link="lidar_frame" />
+    <origin xyz="0 ${-5.5*s} ${0*s}" rpy="0 0 ${-pi/2}" />
+  </joint>
+
+  <link name="depth_frame" />
+  <joint name="depth_frame_joint" type="fixed">
+    <parent link="frame" />
+    <child link="depth_frame" />
+    <origin xyz="0 ${-5.5*s} ${0*s}" rpy="0 0 ${-pi/2}" />
+  </joint>
 </robot>

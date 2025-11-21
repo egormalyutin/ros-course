@@ -17,11 +17,17 @@ def generate_launch_description():
     pkg_resources = get_package_share_directory("minigun_resources")
     pkg_ros_gz_sim = get_package_share_directory("ros_gz_sim")
 
+    world = join(pkg_resources, "worlds", "playground.sdf")
+    print(world)
+
     gz_sim = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             join(pkg_ros_gz_sim, "launch", "gz_sim.launch.py")
         ),
-        launch_arguments={"gz_args": f"-r empty.sdf"}.items(),
+        # launch_arguments={"gz_args": f"-r gpu_lidar_sensor.sdf"}.items(),
+        # launch_arguments={"gz_args": f"-r empty.sdf"}.items(),
+        launch_arguments={"gz_args": f"-r {world}"}.items(),
+        # launch_arguments={"gz_args": f"-r empty.sdf"}.items(),
     )
 
     publisher = IncludeLaunchDescription(
@@ -64,9 +70,9 @@ def generate_launch_description():
             "-x",
             "0.0",
             "-y",
-            "0.0",
+            "1.0",
             "-z",
-            "0.0",
+            "0.5",
         ],
         output="screen",
     )
